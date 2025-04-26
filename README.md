@@ -64,6 +64,11 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
    
    Now register an account with an email (does not need to be a real email) and a password and your good to go.
 
+---
+
+For early support, join our <a href="https://discord.gg/7FWAGXzhkC">discord server</a>
+
+
 [//]: # (## ⚙️ Configuration)
 
 [//]: # ()
