@@ -139,7 +139,7 @@ For early support, join our <a href="https://discord.gg/7FWAGXzhkC">discord serv
 
 [//]: # (*&#40;Zero‑downtime migrations are applied automatically.&#41;*)
 
----
+[//]: #---
 
 [//]: # (## 📜 License)
 
