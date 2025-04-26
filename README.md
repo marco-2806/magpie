@@ -36,27 +36,33 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
     - [Git](https://git-scm.com/downloads)
 
 2. **(OPTIONAL) Set Up GeoLite2 Database:**
+
    If you want to determine the country and type (ISP, Datacenter, or Residential) of the proxies, you'll need to download the [GeoLite2 Country and GeoLite2 ASN Database](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) from MaxMind.
 
     - After downloading, replace the existing databases in the `backend/database` directory.
     - Ensure they have the same names: `GeoLite2-ASN.mmdb` and `GeoLite2-Country.mmdb`.<br><br>
 
-   > **Note**: These databases are not included in the repository due to their licensing restrictions. However, they are bundled in the [prebuilt version](https://github.com/Kuucheen/KC-Checker/releases/).
+   > **Note**: These databases are not included in the repository due to their licensing restrictions.
 
 3. **Clone and start the Project**:
-    ```bash
-    # 1. Clone
-    $ git https://github.com/Kuucheen/magpie.git
-    $ cd magpie
-    
-    # 2. Launch
-    $ docker compose up -d --build
+
+   Open your terminal and enter the following commands
+   ```bash
+   $ git https://github.com/Kuucheen/magpie.git
+   ```
+   
+   ```bash
+   $ cd magpie
+   ```
+   Now start the program with this command
+   ```bash
+   $ docker compose up -d --build
     ```
 
-After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
-http://localhost:8082
-
-Now register an account with an email (does not need to be a real email) and a password and your good to go,
+   After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
+   http://localhost:8082
+   
+   Now register an account with an email (does not need to be a real email) and a password and your good to go.
 
 [//]: # (## ⚙️ Configuration)
 
