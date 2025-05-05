@@ -48,7 +48,7 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
 
    Open your terminal and enter the following commands
    ```bash
-   $ git https://github.com/Kuucheen/magpie.git
+   $ git clone https://github.com/Kuucheen/magpie.git
    ```
    
    ```bash
