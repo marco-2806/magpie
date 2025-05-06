@@ -48,15 +48,15 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
 
    Open your terminal and enter the following commands
    ```bash
-   $ git clone https://github.com/Kuucheen/magpie.git
+   git clone https://github.com/Kuucheen/magpie.git
    ```
    
    ```bash
-   $ cd magpie
+   cd magpie
    ```
    Now start the program with this command
    ```bash
-   $ docker compose up -d --build
+   docker compose up -d --build
     ```
 
    After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
