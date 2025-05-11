@@ -7,24 +7,50 @@ services:
     ports:
       - "8082:8082"
     env_file:
-      - backend/.env        # keeps secrets out of compose
+      - backend/.env # Os valores deste ficheiro serão usados a menos que substituídos abaixo
     environment:
-      - redisUrl=redis://host.docker.internal:8946
-      - DB_HOST=host.docker.internal
+      # URL do Redis Corrigida:
+      # Use o nome do serviço 'redis' e a sua porta interna 6379.
+      # O Docker Compose trata da resolução DNS de 'redis' para o IP correto do contentor.
+      - redisUrl=redis://redis:6379
+
+      # Anfitrião da Base de Dados Corrigido:
+      # Use o nome do serviço 'postgres'. A aplicação também precisará de saber a
+      # porta da BD (5432), utilizador, palavra-passe e nome da base de dados, que devem ser
+      # configurados no backend/.env ou através de outras configurações da aplicação.
+      # Variáveis de ambiente comuns para ligações Postgres são:
+      # POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB
+      # Definir DB_HOST aqui. Certifique-se de que a sua aplicação usa esta variável para o nome do anfitrião.
+      - DB_HOST=postgres
+      # Se a sua aplicação usa POSTGRES_HOST do ficheiro .env, e está definido como 'magpie_db'
+      # ou 'postgres', isso também funcionaria, e poderá não precisar de substituir DB_HOST aqui
+      # a menos que a sua app procure especificamente por DB_HOST.
+      # A parte importante é que resolva para o nome do serviço.
+      #
+      # Outras variáveis do ficheiro .env original que podem precisar de ser aqui se a sua app
+      # depender delas e não estiverem corretamente definidas no backend/.env para o contexto do docker:
+      # - POSTGRES_DB=${POSTGRES_DB} # Exemplo se quiser passar do .env do host
+      # - POSTGRES_USER=${POSTGRES_USER}
+      # - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      # - POSTGRES_PORT=5432 # A porta interna do Postgres
+
     depends_on:
-      - postgres
-      - redis
+      postgres:
+        condition: service_started # Opcional: espera que o postgres esteja totalmente operacional se necessário
+      redis:
+        condition: service_started # Opcional: espera que o redis esteja totalmente operacional se necessário
     restart: unless-stopped
 
   postgres:
     image: postgres:17
     container_name: magpie_db
     environment:
+      # Estas são para inicializar o próprio contentor do Postgres
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: magpie
     ports:
-      - "5434:5432"
+      - "5434:5432" # A porta do anfitrião 5434 mapeia para a porta do contentor 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -33,8 +59,9 @@ services:
     image: redis:latest
     container_name: magpie_redis
     ports:
-      - "8946:6379"
+      - "8946:6379" # A porta do anfitrião 8946 mapeia para a porta do contentor 6379
     restart: unless-stopped
 
 volumes:
   postgres_data:
+
