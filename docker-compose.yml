@@ -5,27 +5,27 @@ services:
     build: .
     container_name: magpie_app
     ports:
-      - "8082:8082"
+      - "8082:8082" # Porta da aplicação Go
     env_file:
-      - backend/.env # Os valores deste ficheiro serão usados a menos que substituídos abaixo
+      - backend/.env # Carrega variáveis deste ficheiro. As abaixo têm precedência.
     environment:
-      # URL do Redis Corrigida:
+      # URL do Redis:
       - redisUrl=redis://redis:6379 # Conecta ao serviço 'redis' na sua porta interna 6379
 
-      # Configuração do PostgreSQL Corrigida:
-      - DB_HOST=postgres # Nome do serviço PostgreSQL
-      - POSTGRES_PORT=5432 # Porta INTERNA do PostgreSQL que o serviço 'app' deve usar
-      # As variáveis POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB devem vir do backend/.env
-      # ou ser definidas aqui se necessário. Ex:
-      # - POSTGRES_USER=admin
-      # - POSTGRES_PASSWORD=admin
-      # - POSTGRES_DB=magpie
+      # Configuração do PostgreSQL para a aplicação Go:
+      # Estas variáveis correspondem ao que database_handler.go espera.
+      - DB_HOST=postgres          # Nome do serviço PostgreSQL na rede Docker
+      - DB_PORT=5432              # Porta INTERNA do PostgreSQL que o serviço 'app' deve usar
+      - DB_NAME=magpie            # Nome da base de dados
+      - DB_USERNAME=admin         # Utilizador da base de dados
+      - DB_PASSWORD=admin         # Palavra-passe da base de dados
+      # - PORT=8082 # A porta da aplicação Go, pode vir do .env ou ser definida aqui se necessário
 
     depends_on:
       postgres:
-        condition: service_healthy # Alterado para service_healthy para maior robustez
+        condition: service_healthy
       redis:
-        condition: service_healthy # Alterado para service_healthy para maior robustez
+        condition: service_healthy
     restart: unless-stopped
 
   postgres:
@@ -33,15 +33,14 @@ services:
     container_name: magpie_db
     environment:
       # Estas são para inicializar o próprio contentor do Postgres
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: magpie
-      # POSTGRES_PORT: 5432 # Não é necessário aqui, o Postgres usa 5432 por defeito internamente
+      POSTGRES_USER: admin      # Corresponde a DB_USERNAME acima
+      POSTGRES_PASSWORD: admin  # Corresponde a DB_PASSWORD acima
+      POSTGRES_DB: magpie       # Corresponde a DB_NAME acima
     ports:
-      - "5434:5432" # A porta do anfitrião 5434 mapeia para a porta INTERNA do contentor 5432
+      - "5434:5432" # Porta do anfitrião 5434 mapeia para a porta INTERNA 5432 do contentor
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    healthcheck: # Adicionado healthcheck para o Postgres
+    healthcheck:
       test: ["CMD-SHELL", "pg_isready -U admin -d magpie"]
       interval: 10s
       timeout: 5s
@@ -52,8 +51,8 @@ services:
     image: redis:latest
     container_name: magpie_redis
     ports:
-      - "8946:6379" # A porta do anfitrião 8946 mapeia para a porta INTERNA do contentor 6379
-    healthcheck: # Adicionado healthcheck para o Redis
+      - "8946:6379" # Porta do anfitrião 8946 mapeia para a porta INTERNA 6379 do contentor
+    healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
