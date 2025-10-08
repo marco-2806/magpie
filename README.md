@@ -64,6 +64,12 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
    
    Now register an account with an email (does not need to be a real email) and a password and your good to go.
 
+### Required Secrets
+
+Set the following environment variables before starting the back-end service:
+
+- `PROXY_ENCRYPTION_KEY` –  A 32-character (or longer) secret used to encrypt proxy credentials stored in the database. Changing this key after proxies have been saved makes them unreadable, so keep it safe and stable across deployments.
+
 ---
 
 For early support, join our <a href="https://discord.gg/7FWAGXzhkC">discord server</a>
