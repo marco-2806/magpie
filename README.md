@@ -60,8 +60,10 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
     ```
 
    After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
-   http://localhost:8082
-   
+   http://localhost:8080
+
+   The API is exposed separately at http://localhost:8082/api if you need to interact with it directly.
+
    Now register an account with an email (does not need to be a real email) and a password and your good to go.
 
 ### Required Secrets
