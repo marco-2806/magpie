@@ -66,6 +66,9 @@ For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geo
 
 Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all queueing magic.
 
+## Attributions & External Sources
+- [AbuseIPDB](https://www.abuseipdb.com/) — logo used with permission when linking to their site.
+
 ## Community
 - Chat with us on Discord: https://discord.gg/7FWAGXzhkC
 - Bug reports & feature requests: open an issue on GitHub.
