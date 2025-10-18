@@ -1,170 +1,75 @@
 <div align="center">
-  <img src="frontend/src/assets/logo/magpie-light.png" style="height: 150px" alt="MAGPIE logo"/>
+  <img src="frontend/src/assets/logo/magpie-light.png" alt="Magpie logo" height="150">
+  <h1>MAGPIE</h1>
+  <p><strong>Multi-user AIO Proxy Manager</strong></p>
+</div>
 
-## M A G P I E
-**Multi‑user AIO Proxy Manager**
+<div align="center">
+  <img src="https://img.shields.io/github/license/Kuucheen/magpie.svg" alt="license">
+  <img src="https://img.shields.io/github/issues/Kuucheen/magpie.svg" alt="issues">
+
+[//]: # (  <img src="https://img.shields.io/github/stars/Kuucheen/magpie.svg?style=social" alt="stars">)
 </div>
 
 ---
 
-> [!WARNING]
-> This project is still in alpha development. Some features may not work correctly.
+> [!NOTE]
+> Magpie is in active development. Features may shift, but the core promise stays the same: less proxy chaos, more time for your real work.
 
+Magpie takes the grind out of running shared proxy infrastructure. It hunts for fresh HTTP / SOCKS proxies, checks their health, enriches them with geo data, and serves them back to you through a dashboard and rotating proxy listeners powered by Go.
 
-Magpie is an **open‑source, Docker‑first** proxy management suite written in **Go (back‑end)** and **Angular (front‑end)**. It continuously scrapes, de‑duplicates, and health‑checks HTTP/SOCKS proxies so you don’t have to.
+## Why Magpie
+- **Always fresh lists** – Scheduled scrapers pull from APIs, text dumps, RSS feeds, and dynamic pages (Rod + headless Chromium).
+- **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
+- **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
+- **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
+- **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
 
----
+## Feature Highlights
+- **Scraping & Discovery**: Build personal or global scrape lists; Magpie queues them in Redis so nothing gets double-checked across instances.
+- **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
+- **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
+- **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
+- **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
 
-## ✨ Feature Highlights
-
-| Category | Details                                                                                               |
-|----------|-------------------------------------------------------------------------------------------------------|
-| **Automatic Scraping** | Pulls from open‑web APIs, plaintext lists, RSS feeds, or your own endpoints on an adjustable schedule. |
-| **Smart Health Checks** | Concurrency‑limited pingers with configurable `timeout`, `retries`, and `interval`.                   |
-| **De‑duplication** | A proxy is checked **once**, even if multiple users request it—saving bandwidth & IP reputation.      |
-| **Thread Pool** | Can dynamically scale Go workers (threads) based on the proxy count and settings.                     |
-| **Tagging & Groups** | Organize proxies by geo, anonymity, speed, or if the proxy is alive.                                  |
-
-[//]: # (| **Live Dashboard** | Angular UI with filtering, charts, and real‑time WebSocket updates.                                   |)
-
----
-
-## 🚀 Quick Start (Docker‑Compose)
+## Quick Start
 
 1. **Install Prerequisites:**
     - [Docker Desktop](https://www.docker.com/)
     - [Git](https://git-scm.com/downloads)
 
-2. **(OPTIONAL) Set Up GeoLite2 Database:**
-
-   If you want to determine the country and type (ISP, Datacenter, or Residential) of the proxies, you'll need to download the [GeoLite2 Country and GeoLite2 ASN Database](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) from MaxMind.
-
-    - After downloading, replace the existing databases in the `backend/database` directory.
-    - Ensure they have the same names: `GeoLite2-ASN.mmdb` and `GeoLite2-Country.mmdb`.<br><br>
-
-   > **Note**: These databases are not included in the repository due to their licensing restrictions.
-
-3. **Clone and start the Project**:
-
-   Open your terminal and enter the following commands
+2. **Clone the project**
    ```bash
-   $ git https://github.com/Kuucheen/magpie.git
+   git clone https://github.com/Kuucheen/magpie.git
+   cd magpie
    ```
-   
-   ```bash
-   $ cd magpie
+3. **Add secrets** – Create `backend/.env` and set at least:
+   ```env
+   PROXY_ENCRYPTION_KEY=dGhpc2lzYW5leGFtcGxlMzJjaGFyc2VjcmV0IQ==
+   redisUrl=redis://redis:6379
    ```
-   Now start the program with this command
+   (Keep that key safe; it secures passwords, proxy auth, and other secrets.)
+4. **Bring everything up**
    ```bash
-   $ docker compose up -d --build
-    ```
+   docker compose up -d --build
+   ```
+5. **Dive in**
+    - UI: http://localhost:8080
+    - API: http://localhost:8082/api  
+      Register the first account to become the admin.
 
-   After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
-   http://localhost:8080
+For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) and generate a License Key. Enter it in the dashboard (Admin → Other) to enable automatic database downloads and updates.
 
-  The API is exposed separately at http://localhost:8082/api if you need to interact with it directly.
+## Local Development
+- **Services**: `docker compose up -d postgres redis`
+- **Backend**: `cd backend && go run ./cmd/magpie`
+- **Frontend**: `cd frontend && npm install && npm run start`
 
-  Now register an account with an email (does not need to be a real email) and a password and your good to go.
+Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all queueing magic.
 
-> **Rotating proxy ports**
->
-> The back end exposes a port range (`20000-20100`) in Docker for the rotating proxy listeners. Magpie now assigns an available port from this range automatically when you create a rotating proxy. If you need a different range, update the mapping in `docker-compose.yml` and (optionally) set `ROTATING_PROXY_PORT_START` / `ROTATING_PROXY_PORT_END` on the backend container.
+## Community
+- Chat with us on Discord: https://discord.gg/7FWAGXzhkC
+- Bug reports & feature requests: open an issue on GitHub.
 
-### Required Secrets
-
-Set the following environment variables before starting the back-end service:
-
-- `PROXY_ENCRYPTION_KEY` –  A 32-character (or longer) secret used to encrypt proxy credentials stored in the database. Changing this key after proxies have been saved makes them unreadable, so keep it safe and stable across deployments.
-
----
-
-For early support, join our <a href="https://discord.gg/7FWAGXzhkC">discord server</a>
-
-
-[//]: # (## ⚙️ Configuration)
-
-[//]: # ()
-[//]: # (| Variable | Default | Description |)
-
-[//]: # (|----------|---------|-------------|)
-
-[//]: # (| `MAGPIE_DB_DSN` | `postgres://magpie:magpie@db:5432/magpie` | PostgreSQL DSN |)
-
-[//]: # (| `MAGPIE_API_PORT` | `8080` | HTTP port exposed by the Go service |)
-
-[//]: # (| `MAGPIE_SCRAPE_INTERVAL` | `15m` | How often to trigger the global scraper loop |)
-
-[//]: # (| `MAGPIE_CHECK_TIMEOUT` | `5s` | Per‑proxy health‑check timeout |)
-
-[//]: # (| `MAGPIE_CHECK_RETRIES` | `2` | Retries before marking a proxy “dead” |)
-
-[//]: # (| `MAGPIE_MAX_WORKERS` | `250` | Hard cap for concurrent workers |)
-
-[//]: # (| `MAGPIE_JWT_SECRET` | `change‑me` | Auth token signing key |)
-
-[//]: # (| `MAGPIE_ADMIN_EMAIL` | `admin@example.com` | First admin user &#40;auto‑created&#41; |)
-
-[//]: # ()
-[//]: # (Put these in a `.env` or pass `-e KEY=value` to `docker compose`.)
-
-[//]: # (---)
-
-[//]: # ()
-[//]: # (## 🖥️ Using Magpie)
-
-[//]: # ()
-[//]: # (### Add Proxies via UI)
-
-[//]: # (1. Navigate to **Proxies → Import**.)
-
-[//]: # (2. Paste raw list or upload a `.csv` file &#40;format: `ip,port[,username,password]`&#41;.)
-
-[//]: # (3. Click **Import** and watch them validate in real time.)
-
-
-[//]: # (## 🛠️ Development)
-
-[//]: # ()
-[//]: # (| Service | Command |)
-
-[//]: # (|---------|---------|)
-
-[//]: # (| **Back‑end** | `go run ./cmd/server` &#40;auto‑reload via `air`&#41; |)
-
-[//]: # (| **Front‑end** | `npm i && ng serve --open` |)
-
-[//]: # (| **Lint / Tests** | `make lint test` |)
-
-[//]: # (---)
-
-[//]: # ()
-[//]: # (## ♻️ Updating)
-
-[//]: # ()
-[//]: # (```bash)
-
-[//]: # ($ git pull)
-
-[//]: # ($ docker compose pull && docker compose up -d --build)
-
-[//]: # (```)
-
-[//]: # (*&#40;Zero‑downtime migrations are applied automatically.&#41;*)
-
-[//]: #---
-
-[//]: # (## 📜 License)
-
-[//]: # ()
-[//]: # (Magpie is released under the **MIT License**—see [`LICENSE`]&#40;LICENSE&#41; for details.)
-
-[//]: # ()
-[//]: # (---)
-
-[//]: # ()
-[//]: # (## 🙏 Contributing)
-
-[//]: # ()
-[//]: # (Pull requests are welcome! Please open an issue first to discuss major changes. Make sure to run `make test` and abide by the [code of conduct]&#40;CODE_OF_CONDUCT.md&#41;.)
-
-[//]: # ()
+## License
+Magpie ships under the **GNU Affero General Public License v3.0**. See `LICENSE` for the full text. Contributions are more than welcome.
