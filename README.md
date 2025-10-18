@@ -43,10 +43,9 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
    git clone https://github.com/Kuucheen/magpie.git
    cd magpie
    ```
-3. **Add secrets** – Create `backend/.env` and set at least:
+3. **Change secrets** – Change `backend/.env` and set a proxy encryption key:
    ```env
-   PROXY_ENCRYPTION_KEY=dGhpc2lzYW5leGFtcGxlMzJjaGFyc2VjcmV0IQ==
-   redisUrl=redis://redis:6379
+   PROXY_ENCRYPTION_KEY=<my-secure-random-key>
    ```
    (Keep that key safe; it secures passwords, proxy auth, and other secrets.)
 4. **Bring everything up**
