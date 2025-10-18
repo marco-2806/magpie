@@ -62,9 +62,13 @@ Magpie is an **open‑source, Docker‑first** proxy management suite written in
    After everything started up (this can take a few seconds) you can open your browser and enter the following URL:
    http://localhost:8080
 
-   The API is exposed separately at http://localhost:8082/api if you need to interact with it directly.
+  The API is exposed separately at http://localhost:8082/api if you need to interact with it directly.
 
-   Now register an account with an email (does not need to be a real email) and a password and your good to go.
+  Now register an account with an email (does not need to be a real email) and a password and your good to go.
+
+> **Rotating proxy ports**
+>
+> The back end exposes a port range (`20000-20100`) in Docker for the rotating proxy listeners. Magpie now assigns an available port from this range automatically when you create a rotating proxy. If you need a different range, update the mapping in `docker-compose.yml` and (optionally) set `ROTATING_PROXY_PORT_START` / `ROTATING_PROXY_PORT_END` on the backend container.
 
 ### Required Secrets
 
