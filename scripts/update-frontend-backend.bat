@@ -26,11 +26,45 @@ if not errorlevel 1 (
   set "COMPOSE_ARGS="
 )
 
+set "STASHED=0"
+echo Checking for local changes...
+for /f "delims=" %%i in ('git status --porcelain') do (
+  set "STASHED=1"
+  goto doStash
+)
+:doStash
+if "%STASHED%"=="1" (
+  echo Local changes detected. Temporarily stashing...
+  git stash push --include-untracked >nul
+  if errorlevel 1 (
+    echo Failed to stash local changes. Resolve them manually and rerun.
+    popd
+    exit /b 1
+  )
+)
+
 echo Pulling latest changes...
 git pull --ff-only
 if errorlevel 1 (
+  if "%STASHED%"=="1" (
+    echo Restoring stashed changes after failed pull...
+    git stash pop
+    if errorlevel 1 (
+      echo Automatic restore of stashed changes failed. Run "git stash pop" manually.
+    )
+  )
   popd
   exit /b %ERRORLEVEL%
+)
+
+if "%STASHED%"=="1" (
+  echo Restoring local changes...
+  git stash pop
+  if errorlevel 1 (
+    echo Automatic restore failed. Run "git stash pop" manually.
+    popd
+    exit /b 1
+  )
 )
 
 echo Rebuilding frontend and backend containers...

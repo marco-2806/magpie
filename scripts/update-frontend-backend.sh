@@ -15,8 +15,37 @@ else
   exit 1
 fi
 
+stash_applied=0
+echo "Checking for local changes..."
+if ! git diff --quiet --ignore-submodules -- || ! git diff --cached --quiet --ignore-submodules --; then
+  echo "Local changes detected. Temporarily stashing..."
+  if git stash push --include-untracked >/dev/null; then
+    stash_applied=1
+  else
+    echo "Failed to stash local changes. Please resolve them manually and rerun." >&2
+    exit 1
+  fi
+fi
+
 echo "Pulling latest changes..."
-git pull --ff-only
+if ! git pull --ff-only; then
+  if [ "$stash_applied" -eq 1 ]; then
+    echo "Restoring stashed changes after failed pull..."
+    if ! git stash pop; then
+      echo "Automatic restore of stashed changes failed. Run 'git stash pop' manually." >&2
+    fi
+  fi
+  echo "Git pull failed. Resolve issues and rerun." >&2
+  exit 1
+fi
+
+if [ "$stash_applied" -eq 1 ]; then
+  echo "Restoring local changes..."
+  if ! git stash pop; then
+    echo "Automatic restore failed. Run 'git stash pop' manually." >&2
+    exit 1
+  fi
+fi
 
 echo "Rebuilding frontend and backend containers..."
 "${compose_cmd[@]}" up -d --build frontend backend
