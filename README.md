@@ -59,6 +59,19 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
 
 For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) and generate a License Key. Enter it in the dashboard (Admin → Other) to enable automatic database downloads and updates.
 
+
+### One-command Updates
+- **macOS/Linux — refresh frontend + backend**:
+  ```bash
+  ./scripts/update-frontend-backend.sh
+  ```
+  The helper script pulls the latest changes and rebuilds just the `frontend` and `backend` containers with Docker Compose.
+- **Windows (Command Prompt)**:
+  ```bash
+  scripts\update-frontend-backend.bat
+  ```
+  Double-click the file or run the command above from the repo root.
+
 ## Local Development
 - **Services**: `docker compose up -d postgres redis`
 - **Backend**: `cd backend && go run ./cmd/magpie`
