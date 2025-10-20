@@ -48,11 +48,11 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
    PROXY_ENCRYPTION_KEY=<my-secure-random-key>
    ```
 
-    > [!WARNING]
-    > `PROXY_ENCRYPTION_KEY` locks all stored secrets (proxy auth, passwords, and ip addresses).  
-    > If you start the backend (or update to a new version) with a *different* key than the one used before, decryption fails and previously added proxies will not display or validate.  
-    > **Fix:** start the backend again using the **previous key** and everything works like before.  
-    > **Only rotate on purpose:** if you need a new key, export your proxies first.
+> [!WARNING]
+> `PROXY_ENCRYPTION_KEY` locks all stored secrets (proxy auth, passwords, and ip addresses).  
+> If you start the backend (or update to a new version) with a *different* key than the one used before, decryption fails and previously added proxies will not display or validate.  
+> **Fix:** start the backend again using the **previous key** and everything works like before.  
+> **Only rotate on purpose:** if you need a new key, export your proxies first.
 
 4. **Bring everything up**
    ```bash
