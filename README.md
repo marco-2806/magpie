@@ -67,21 +67,22 @@ For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geo
 
 
 ### Updating
+The helper scripts pull the latest changes and rebuilds just the `frontend` and `backend` containers with Docker Compose.
+
 - **macOS/Linux — refresh frontend + backend**:
   ```bash
   ./scripts/update-frontend-backend.sh
   ```
-  The helper script pulls the latest changes and rebuilds just the `frontend` and `backend` containers with Docker Compose.
-  - **Windows (Command Prompt)**:
-    ```bash
-    scripts\update-frontend-backend.bat
-    ```
-    Double-click the file or run the command above from the repo root.
+- **Windows (Command Prompt)**:
+  ```bash
+  scripts\update-frontend-backend.bat
+  ```
+  Double-click the file or run the command above from the repo root.
 
 ## Local Development
 - **Services**: `docker compose up -d postgres redis`
-  - **Backend**: `cd backend && go run ./cmd/magpie`
-  - **Frontend**: `cd frontend && npm install && npm run start`
+- **Backend**: `cd backend && go run ./cmd/magpie`
+- **Frontend**: `cd frontend && npm install && npm run start`
 
 Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all queueing magic.
 
@@ -90,7 +91,7 @@ Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all que
 
 ## Community
 - Chat with us on Discord: https://discord.gg/7FWAGXzhkC
-  - Bug reports & feature requests: open an issue on GitHub.
+- Bug reports & feature requests: open an issue on GitHub.
 
 ## License
 Magpie ships under the **GNU Affero General Public License v3.0**. See `LICENSE` for the full text. Contributions are more than welcome.
