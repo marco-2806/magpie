@@ -66,7 +66,7 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
 For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) and generate a License Key. Enter it in the dashboard (Admin → Other) to enable automatic database downloads and updates.
 
 
-### One-command Updates
+### Updating
 - **macOS/Linux — refresh frontend + backend**:
   ```bash
   ./scripts/update-frontend-backend.sh
