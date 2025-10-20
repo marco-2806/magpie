@@ -20,17 +20,17 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
 
 ## Why Magpie
 - **Always fresh lists** – Scheduled scrapers pull from APIs, text dumps, RSS feeds, and dynamic pages (Rod + headless Chromium).
-- **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
-- **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
-- **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
-- **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
+  - **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
+  - **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
+  - **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
+  - **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
 
 ## Feature Highlights
 - **Scraping & Discovery**: Build personal or global scrape lists; Magpie queues them in Redis so nothing gets double-checked across instances.
-- **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
-- **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
-- **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
-- **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
+  - **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
+  - **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
+  - **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
+  - **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
 
 ## Quick Start
 
@@ -47,7 +47,13 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
    ```env
    PROXY_ENCRYPTION_KEY=<my-secure-random-key>
    ```
-   (Keep that key safe; it secures passwords, proxy auth, and other secrets.)
+
+    > [!WARNING]
+    > `PROXY_ENCRYPTION_KEY` locks all stored secrets (proxy auth, passwords, and ip addresses).  
+    > If you start the backend (or update to a new version) with a *different* key than the one used before, decryption fails and previously added proxies will not display or validate.  
+    > **Fix:** start the backend again using the **previous key** and everything works like before.  
+    > **Only rotate on purpose:** if you need a new key, export your proxies first.
+
 4. **Bring everything up**
    ```bash
    docker compose up -d --build
@@ -66,16 +72,16 @@ For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geo
   ./scripts/update-frontend-backend.sh
   ```
   The helper script pulls the latest changes and rebuilds just the `frontend` and `backend` containers with Docker Compose.
-- **Windows (Command Prompt)**:
-  ```bash
-  scripts\update-frontend-backend.bat
-  ```
-  Double-click the file or run the command above from the repo root.
+  - **Windows (Command Prompt)**:
+    ```bash
+    scripts\update-frontend-backend.bat
+    ```
+    Double-click the file or run the command above from the repo root.
 
 ## Local Development
 - **Services**: `docker compose up -d postgres redis`
-- **Backend**: `cd backend && go run ./cmd/magpie`
-- **Frontend**: `cd frontend && npm install && npm run start`
+  - **Backend**: `cd backend && go run ./cmd/magpie`
+  - **Frontend**: `cd frontend && npm install && npm run start`
 
 Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all queueing magic.
 
@@ -84,7 +90,7 @@ Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all que
 
 ## Community
 - Chat with us on Discord: https://discord.gg/7FWAGXzhkC
-- Bug reports & feature requests: open an issue on GitHub.
+  - Bug reports & feature requests: open an issue on GitHub.
 
 ## License
 Magpie ships under the **GNU Affero General Public License v3.0**. See `LICENSE` for the full text. Contributions are more than welcome.
