@@ -67,7 +67,7 @@ For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geo
 
 
 ### Updating
-The helper scripts pull the latest changes and rebuilds just the `frontend` and `backend` containers with Docker Compose.
+The scripts pull the latest changes and rebuild just the `frontend` and `backend` containers with Docker Compose.
 
 - **macOS/Linux — refresh frontend + backend**:
   ```bash
