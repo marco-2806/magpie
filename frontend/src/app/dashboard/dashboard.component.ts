@@ -2,14 +2,12 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ProgressSpinner} from 'primeng/progressspinner';
 import {DecimalPipe, NgIf} from '@angular/common';
 import {Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-
+import {finalize, takeUntil} from 'rxjs/operators';
 import {ProxyCheck} from '../models/ProxyCheck';
 import {KpiCardComponent} from './cards/kpi-card/kpi-card.component';
 import {ProxiesPerHourCardComponent} from './cards/proxies-per-hour-card/proxies-per-hour-card.component';
 import {ProxyHistoryCardComponent} from './cards/proxy-history-card/proxy-history-card.component';
 import {ProxiesPerCountryCardComponent} from './cards/proxies-per-country-card/proxies-per-country-card.component';
-import {ProxiesByAnonymityCardComponent} from './cards/proxies-by-anonymity-card/proxies-by-anonymity-card.component';
 import {JudgeByPercentageCardComponent} from './cards/judge-by-percentage-card/judge-by-percentage-card.component';
 import {
   CountryBreakdownEntry,
@@ -18,7 +16,9 @@ import {
   GraphqlService,
   JudgeValidProxy,
   ProxyHistoryEntry,
-  ProxyNode
+  ProxyNode,
+  ProxySnapshotEntry,
+  ProxySnapshots
 } from '../services/graphql.service';
 
 interface SparklineMetric {
@@ -45,7 +45,6 @@ interface DashboardStatus {
     ProxiesPerHourCardComponent,
     ProxyHistoryCardComponent,
     ProxiesPerCountryCardComponent,
-    ProxiesByAnonymityCardComponent,
     JudgeByPercentageCardComponent
   ],
   styleUrls: ['./dashboard.component.scss']
@@ -114,6 +113,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   judgePeriodOptions = ['Yearly', 'Monthly', 'Weekly'];
 
   private readonly destroy$ = new Subject<void>();
+  proxyHistoryRefreshing = false;
 
   constructor(private graphqlService: GraphqlService) {}
 
@@ -124,6 +124,35 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  onProxyHistoryRefresh(): void {
+    if (this.proxyHistoryRefreshing) {
+      return;
+    }
+
+    this.proxyHistoryRefreshing = true;
+
+    this.graphqlService
+      .fetchDashboardData()
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => {
+          this.proxyHistoryRefreshing = false;
+        })
+      )
+      .subscribe({
+        next: ({viewer}) => {
+          this.applyDashboardData(viewer);
+          this.dashboardInfo = {...this.dashboardInfo, error: undefined};
+        },
+        error: (error: Error) => {
+          this.dashboardInfo = {
+            ...this.dashboardInfo,
+            error: error?.message ?? 'Failed to refresh proxy history'
+          };
+        }
+      });
   }
 
   private loadDashboard(): void {
@@ -151,7 +180,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.updateKpis(viewer.dashboard, viewer.proxyCount);
+    this.updateKpis(viewer.dashboard, viewer.proxyCount, viewer.proxySnapshots, viewer.proxyHistory);
     this.updateCountryBreakdown(
       viewer.proxies?.items ?? [],
       viewer.proxyCount,
@@ -163,37 +192,81 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.buildProxiesLineChart(viewer.proxyHistory ?? [], viewer.proxyCount);
   }
 
-  private updateKpis(dashboard: DashboardInfo, proxyCount: number): void {
-    const judgeEntries = dashboard?.judgeValidProxies ?? [];
-    const aliveTotals = judgeEntries.reduce((sum, entry) => {
-      return sum + entry.eliteProxies + entry.anonymousProxies + entry.transparentProxies;
-    }, 0);
+  private updateKpis(
+    dashboard: DashboardInfo | undefined,
+    proxyCount: number,
+    snapshots: ProxySnapshots | undefined,
+    proxyHistory: ProxyHistoryEntry[] | undefined
+  ): void {
+    const aliveSeries = this.extractSnapshotCounts(snapshots?.alive);
+    const fallbackAlive = this.resolveAliveFallback(dashboard);
+    const aliveValue = aliveSeries.length ? aliveSeries[aliveSeries.length - 1] : fallbackAlive.value;
+    const aliveHistory = aliveSeries.length ? aliveSeries : fallbackAlive.history;
 
-    const aliveHistory = judgeEntries
-      .map((entry) => entry.eliteProxies + entry.anonymousProxies + entry.transparentProxies)
-      .filter((value) => value > 0);
     this.conversionRate = {
-      value: aliveTotals,
-      history: aliveHistory.length ? aliveHistory : [aliveTotals],
-      displayValue: aliveTotals.toLocaleString()
+      value: aliveValue,
+      history: aliveHistory.length ? aliveHistory : [aliveValue],
+      displayValue: aliveValue.toLocaleString()
     };
 
-    const totalChecks = dashboard?.totalChecks ?? 0;
-    const totalChecksWeek = dashboard?.totalChecksWeek ?? 0;
-    const checksHistory = [totalChecksWeek, totalChecks].filter((value, index) => value > 0 && index === 0 ? true : value >= totalChecksWeek);
+    const totalSeries = (proxyHistory ?? []).map((entry) => entry.count).filter((value) => typeof value === 'number');
     this.avgOrderValue = {
       value: proxyCount,
-      history: checksHistory.length ? checksHistory : [proxyCount],
+      history: totalSeries.length ? totalSeries : [proxyCount],
       displayValue: proxyCount.toLocaleString()
     };
 
-    const totalScraped = dashboard?.totalScraped ?? 0;
-    const totalScrapedWeek = dashboard?.totalScrapedWeek ?? 0;
-    const scrapedHistory = totalScrapedWeek > 0 ? [totalScrapedWeek] : [];
+    const scrapedSeries = this.extractSnapshotCounts(snapshots?.scraped);
+    const fallbackScraped = this.resolveScrapedFallback(dashboard);
+    const scrapedValue = scrapedSeries.length ? scrapedSeries[scrapedSeries.length - 1] : fallbackScraped.value;
+    const scrapedHistory = scrapedSeries.length ? scrapedSeries : fallbackScraped.history;
+
     this.orderQuantity = {
+      value: scrapedValue,
+      history: scrapedHistory.length ? scrapedHistory : [scrapedValue],
+      displayValue: scrapedValue.toLocaleString()
+    };
+  }
+
+  private extractSnapshotCounts(entries: ProxySnapshotEntry[] | undefined): number[] {
+    if (!Array.isArray(entries) || !entries.length) {
+      return [];
+    }
+
+    return entries
+      .map((entry) => Number(entry?.count ?? 0))
+      .filter((value) => Number.isFinite(value) && value >= 0);
+  }
+
+  private resolveAliveFallback(dashboard: DashboardInfo | undefined): { value: number; history: number[] } {
+    const judgeEntries = dashboard?.judgeValidProxies ?? [];
+    if (!judgeEntries.length) {
+      return { value: 0, history: [] };
+    }
+
+    const totals = judgeEntries.map(
+      (entry) => entry.eliteProxies + entry.anonymousProxies + entry.transparentProxies
+    );
+    const aggregate = totals.reduce((sum, value) => sum + value, 0);
+
+    return {
+      value: aggregate,
+      history: totals.filter((value) => value > 0)
+    };
+  }
+
+  private resolveScrapedFallback(dashboard: DashboardInfo | undefined): { value: number; history: number[] } {
+    if (!dashboard) {
+      return { value: 0, history: [] };
+    }
+
+    const totalScraped = dashboard.totalScraped ?? 0;
+    const totalScrapedWeek = dashboard.totalScrapedWeek ?? 0;
+    const history = totalScrapedWeek > 0 ? [totalScrapedWeek] : [];
+
+    return {
       value: totalScraped,
-      history: scrapedHistory.length ? scrapedHistory : [totalScraped],
-      displayValue: totalScraped.toLocaleString()
+      history
     };
   }
 
