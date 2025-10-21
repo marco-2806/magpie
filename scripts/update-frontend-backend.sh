@@ -49,9 +49,8 @@ fi
 
 echo "Rebuilding frontend and backend containers..."
 
-export MAGPIE_BUILD_VERSION="$(git rev-parse --short HEAD)"
-export MAGPIE_BUILD_TIME="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-echo "Using build metadata: version=${MAGPIE_BUILD_VERSION}, built_at=${MAGPIE_BUILD_TIME}"
+export MAGPIE_GIT_COMMIT="$(git rev-parse --short HEAD)"
+echo "Embedding frontend commit ${MAGPIE_GIT_COMMIT}"
 
 "${compose_cmd[@]}" up -d --build frontend backend
 
