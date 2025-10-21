@@ -13,6 +13,7 @@ services:
       - redisUrl=redis://redis:6379
       - DB_HOST=postgres
       - DB_PORT=5432
+      - GITHUB_UPDATES_LOCAL_SHA=${MAGPIE_GIT_COMMIT:-}
     depends_on:
       - postgres
       - redis
@@ -21,6 +22,8 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        BUILD_COMMIT: ${MAGPIE_GIT_COMMIT:-dev}
     container_name: magpie_frontend
     ports:
       - "8080:80"
