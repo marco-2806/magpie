@@ -48,6 +48,11 @@ if [ "$stash_applied" -eq 1 ]; then
 fi
 
 echo "Rebuilding frontend and backend containers..."
+
+export MAGPIE_BUILD_VERSION="$(git rev-parse --short HEAD)"
+export MAGPIE_BUILD_TIME="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+echo "Using build metadata: version=${MAGPIE_BUILD_VERSION}, built_at=${MAGPIE_BUILD_TIME}"
+
 "${compose_cmd[@]}" up -d --build frontend backend
 
 echo "Done. Frontend is available at http://localhost:8080 and backend API at http://localhost:8082/api"

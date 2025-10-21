@@ -68,6 +68,9 @@ if "%STASHED%"=="1" (
 )
 
 echo Rebuilding frontend and backend containers...
+for /f "delims=" %%i in ('git rev-parse --short HEAD') do set "MAGPIE_BUILD_VERSION=%%i"
+for /f "delims=" %%i in ('powershell -NoProfile -Command "Get-Date -Format \"yyyy-MM-ddTHH:mm:ssZ\""') do set "MAGPIE_BUILD_TIME=%%i"
+echo Using build metadata: version=%MAGPIE_BUILD_VERSION%, built_at=%MAGPIE_BUILD_TIME%
 if "%COMPOSE_ARGS%"=="" (
   call "%COMPOSE_EXE%" up -d --build frontend backend
 ) else (

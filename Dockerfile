@@ -1,11 +1,14 @@
 ###############  Stage 1 – Go build  ###############
 FROM golang:1.24-alpine AS backend-build
 
+ARG BUILD_VERSION=dev
+ARG BUILD_TIME=unknown
+
 WORKDIR /backend
 COPY backend/ .
 
 ENV CGO_ENABLED=0
-RUN go build -o server ./cmd/magpie
+RUN go build -ldflags "-X 'magpie/internal/app/version.buildVersion=${BUILD_VERSION}' -X 'magpie/internal/app/version.builtAt=${BUILD_TIME}'" -o server ./cmd/magpie
 
 ############ Stage 2 – grab Chromium’s shared libraries ############
 FROM debian:bookworm-slim AS chromium-deps

@@ -2,7 +2,11 @@ version: "3.9"
 
 services:
   backend:
-    build: .
+    build:
+      context: .
+      args:
+        BUILD_VERSION: ${MAGPIE_BUILD_VERSION:-dev}
+        BUILD_TIME: ${MAGPIE_BUILD_TIME:-}
     container_name: magpie_backend
     ports:
       - "8082:8082"
