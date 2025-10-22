@@ -20,17 +20,17 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
 
 ## Why Magpie
 - **Always fresh lists** – Scheduled scrapers pull from APIs, text dumps, RSS feeds, and dynamic pages (Rod + headless Chromium).
-  - **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
-  - **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
-  - **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
-  - **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
+- **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
+- **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
+- **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
+- **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
 
 ## Feature Highlights
 - **Scraping & Discovery**: Build personal or global scrape lists; Magpie queues them in Redis so nothing gets double-checked across instances.
-  - **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
-  - **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
-  - **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
-  - **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
+- **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
+- **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
+- **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
+- **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
 
 ## Quick Start
 
