@@ -5,7 +5,7 @@ services:
     build: .
     container_name: magpie_backend
     ports:
-      - "8082:8082"
+      - "5656:5656"
       - "20000-20100:20000-20100"
     env_file:
       - backend/.env        # keeps secrets out of compose
@@ -26,7 +26,7 @@ services:
         BUILD_COMMIT: ${MAGPIE_GIT_COMMIT:-dev}
     container_name: magpie_frontend
     ports:
-      - "8080:80"
+      - "5050:80"
     depends_on:
       - backend
     restart: unless-stopped

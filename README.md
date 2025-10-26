@@ -59,8 +59,8 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
    docker compose up -d --build
    ```
 5. **Dive in**
-    - UI: http://localhost:8080
-    - API: http://localhost:8082/api  
+    - UI: http://localhost:5050
+    - API: http://localhost:5656/api  
       Register the first account to become the admin.
 
 For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) and generate a License Key. Enter it in the dashboard (Admin → Other) to enable automatic database downloads and updates.
