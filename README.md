@@ -7,6 +7,9 @@
 <div align="center">
   <img src="https://img.shields.io/github/license/Kuucheen/magpie.svg" alt="license">
   <img src="https://img.shields.io/github/issues/Kuucheen/magpie.svg" alt="issues">
+  <a href="https://discord.gg/7FWAGXzhkC">
+      <img src="https://img.shields.io/badge/Discord-%235865F2.svg?&logo=discord&logoColor=white" alt="discord">
+  </a>
 
 [//]: # (  <img src="https://img.shields.io/github/stars/Kuucheen/magpie.svg?style=social" alt="stars">)
 </div>
