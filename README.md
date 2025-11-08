@@ -17,23 +17,25 @@
 ---
 
 > [!NOTE]
-> Magpie is in active development. Features may shift, but the core promise stays the same: less proxy chaos, more time for your real work.
+> Magpie is in active development. Expect frequent UI polish and API nudges while we harden the core workers.
 
-Magpie takes the grind out of running shared proxy infrastructure. It hunts for fresh HTTP / SOCKS proxies, checks their health, enriches them with geo data, and serves them back to you through a dashboard and rotating proxy listeners powered by Go.
+Magpie runs the boring parts of shared proxy operations: it discovers fresh HTTP/SOCKS endpoints, checks them with configurable judges, enriches them with Geo data, and hands them back through a dashboard, REST, GraphQL, or on-demand rotating listeners.
 
-## Why Magpie
-- **Always fresh lists** – Scheduled scrapers pull from APIs, text dumps, RSS feeds, and dynamic pages (Rod + headless Chromium).
-- **Reliable quality** – Configurable judges, retries, and timeouts keep noisy proxies out of your pool.
-- **Team friendly** – Multiple accounts share one brain. Magpie de-duplicates work automatically and tracks who owns what.
-- **Instant rotation** – Launch rotating proxy listeners with a couple of clicks; Magpie picks free ports for you.
-- **Actionable insights** – Charts, breakdowns, and per-proxy history help you decide what to keep or drop.
+<details>
+    <summary>Screenshots</summary>
+    <img src="resources/screenshots/dashboard.png" alt="Dashboard">
+    <img src="resources/screenshots/proxyList.png" alt="Proxy List">
+    <img src="resources/screenshots/proxyDetail.png" alt="Proxy Details">
+    <img src="resources/screenshots/rotatingProxies.png" alt="Rotating Proxies">
+    <img src="resources/screenshots/accountSettings.png" alt="Account Settings">
+</details>
 
-## Feature Highlights
-- **Scraping & Discovery**: Build personal or global scrape lists; Magpie queues them in Redis so nothing gets double-checked across instances.
-- **Health Checks**: Smart worker pool in Go keeps throughput high without melting your network.
-- **Geo & Reputation**: Optional MaxMind GeoLite2 databases label proxies with country and ISP type.
-- **Export & Sharing**: Filter, search, and export directly from the UI or tap into the REST / GraphQL endpoints.
-- **Security**: Proxy credentials stay encrypted at rest (bring your own `PROXY_ENCRYPTION_KEY`). JWT auth, admin roles, and user-specific defaults included.
+## Features
+- **Automated scraping** — Continuously gathers HTTP/SOCKS proxies from public APIs, text dumps, and feeds.
+- **Configurable health checks** — Verifies and checks proxy uptime and latency on an adjustable schedule.
+- **Multi-user isolation** — Supports separate accounts and permission scopes for shared hosting.
+- **Rotating proxy endpoints** — Instantly spawn self-hosted rotating gateways without manual list management.
+- **Enrichment pipeline** — Augments proxies with **geolocation, ISP, and reputation** metadata for advanced filtering.
 
 ## Quick Start
 
@@ -68,11 +70,10 @@ Magpie takes the grind out of running shared proxy infrastructure. It hunts for 
 
 For geo lookups, create a [MaxMind GeoLite2 account](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data) and generate a License Key. Enter it in the dashboard (Admin → Other) to enable automatic database downloads and updates.
 
-
 ### Updating
-The scripts pull the latest changes and rebuild just the `frontend` and `backend` containers with Docker Compose.
+Use the helper scripts to pull the latest code and rebuild just the frontend/backend containers.
 
-- **macOS/Linux — refresh frontend + backend**:
+- **macOS/Linux**:
   ```bash
   ./scripts/update-frontend-backend.sh
   ```
@@ -80,21 +81,21 @@ The scripts pull the latest changes and rebuild just the `frontend` and `backend
   ```bash
   scripts\update-frontend-backend.bat
   ```
-  Double-click the file or run the command above from the repo root.
+  Double-click the file or run it from the repo root.
 
 ## Local Development
-- **Services**: `docker compose up -d postgres redis`
-- **Backend**: `cd backend && go run ./cmd/magpie`
-- **Frontend**: `cd frontend && npm install && npm run start`
+- Services: `docker compose up -d postgres redis`
+- Backend: `cd backend && go run ./cmd/magpie`
+- Frontend: `cd frontend && npm install && npm run start`
 
-Magpie uses Go 1.24.x, Angular 20, PostgreSQL for storage, and Redis for all queueing magic.
+Magpie targets Go 1.24.x, Angular 20, PostgreSQL, and Redis. Keep those versions handy for parity.
 
 ## Attributions & External Sources
 - [AbuseIPDB](https://www.abuseipdb.com/) — logo used with permission when linking to their site.
 
 ## Community
-- Chat with us on Discord: https://discord.gg/7FWAGXzhkC
-- Bug reports & feature requests: open an issue on GitHub.
+- Discord: https://discord.gg/7FWAGXzhkC
+- Issues & feature requests: open them on GitHub.
 
 ## License
 Magpie ships under the **GNU Affero General Public License v3.0**. See `LICENSE` for the full text. Contributions are more than welcome.
