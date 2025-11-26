@@ -49,9 +49,6 @@ fi
 
 echo "Rebuilding frontend and backend containers..."
 
-export MAGPIE_GIT_COMMIT="$(git rev-parse --short HEAD)"
-echo "Embedding frontend commit ${MAGPIE_GIT_COMMIT}"
-
 "${compose_cmd[@]}" up -d --build frontend backend
 
 echo "Done. Frontend is available at http://localhost:8080 and backend API at http://localhost:8082/api"

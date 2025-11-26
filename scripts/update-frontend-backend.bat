@@ -68,8 +68,6 @@ if "%STASHED%"=="1" (
 )
 
 echo Rebuilding frontend and backend containers...
-for /f "delims=" %%i in ('git rev-parse --short HEAD') do set "MAGPIE_GIT_COMMIT=%%i"
-echo Embedding frontend commit %MAGPIE_GIT_COMMIT%
 if "%COMPOSE_ARGS%"=="" (
   call "%COMPOSE_EXE%" up -d --build frontend backend
 ) else (

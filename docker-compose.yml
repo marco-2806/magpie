@@ -13,7 +13,6 @@ services:
       - redisUrl=redis://redis:6379
       - DB_HOST=postgres
       - DB_PORT=5432
-      - GITHUB_UPDATES_LOCAL_SHA=${MAGPIE_GIT_COMMIT:-}
     depends_on:
       - postgres
       - redis
