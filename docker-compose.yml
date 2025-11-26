@@ -5,8 +5,6 @@ services:
     ports:
       - "5656:5656"
       - "20000-20100:20000-20100"
-    env_file:
-      - backend/.env
     environment:
       - PROXY_ENCRYPTION_KEY=<CHANGE-THIS>
 
