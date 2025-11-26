@@ -48,9 +48,9 @@ Magpie runs the boring parts of shared proxy operations: it discovers fresh HTTP
    git clone https://github.com/Kuucheen/magpie.git
    cd magpie
    ```
-3. **Change secrets** – Change `backend/.env` and set a proxy encryption key:
+3. **Change secrets** – This step is optional but highly recommended. Change the proxy encryption key in the docker-compose.yml to something you won't forget:
    ```env
-   PROXY_ENCRYPTION_KEY=<my-secure-random-key>
+   PROXY_ENCRYPTION_KEY=ThisIsMyEncryptionKey!
    ```
 
 > [!WARNING]

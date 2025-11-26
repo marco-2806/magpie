@@ -1,15 +1,15 @@
-version: "3.9"
-
 services:
   backend:
-    build: .
+    image: kuuchen/magpie-backend:${MAGPIE_IMAGE_TAG:-latest}
     container_name: magpie_backend
     ports:
       - "5656:5656"
       - "20000-20100:20000-20100"
     env_file:
-      - backend/.env        # keeps secrets out of compose
+      - backend/.env
     environment:
+      - PROXY_ENCRYPTION_KEY=<CHANGE-THIS>
+
       - redisUrl=redis://redis:6379
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -20,10 +20,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    build:
-      context: ./frontend
-      args:
-        BUILD_COMMIT: ${MAGPIE_GIT_COMMIT:-dev}
+    image: kuuchen/magpie-frontend:${MAGPIE_IMAGE_TAG:-latest}
     container_name: magpie_frontend
     ports:
       - "5050:80"
